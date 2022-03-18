@@ -16,14 +16,32 @@ using namespace std;
 
 int main (int argc, char** argv)
 {
+
+	auto driver_count = SDL_GetNumVideoDrivers();
+	if (driver_count > 0)
+	{
+		cout << "Drivers: " << endl;
+		for (int i=0; i<driver_count; ++i)
+		{
+			cout << SDL_GetVideoDriver(i) << endl;
+		}
+	}
+	else
+	{
+		cout << "No Video Drivers" << endl;
+	}
+
 	// Setup SDL
     // (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
     // depending on whether SDL_INIT_GAMECONTROLLER is enabled or disabled.. updating to latest version of SDL is recommended!)
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
-        printf("Error: %s\n", SDL_GetError());
+        printf("SDL_Init Error: %s\n", SDL_GetError());
         return -1;
     }
+
+	std::string video_driver(SDL_GetCurrentVideoDriver());
+	cout << "SDL initialized with driver: " << video_driver << endl;
 
     // Setup window
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
