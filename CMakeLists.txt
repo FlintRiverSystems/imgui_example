@@ -28,11 +28,15 @@ set(CMAKE_CXX_REQUIRED True)
 #find_package (Boost REQUIRED COMPONENTS filesystem date_time)
 #target_link_libraries(${PROJECT_NAME} PRIVATE Boost::boost)
 
+find_package(X11 REQUIRED)
+
 find_package(SDL2 CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main)
 
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
 
 if (MSVC)
 endif()
