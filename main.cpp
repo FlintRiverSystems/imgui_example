@@ -12,6 +12,11 @@
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+static void main_loop(void*);
+#endif
+
 using namespace std;
 
 int main (int argc, char** argv)
@@ -52,7 +57,7 @@ int main (int argc, char** argv)
     if (renderer == NULL)
     {
         SDL_Log("Error creating SDL_Renderer!");
-        return false;
+        return -1;
     }
     //SDL_RendererInfo info;
     //SDL_GetRendererInfo(renderer, &info);
@@ -88,15 +93,29 @@ int main (int argc, char** argv)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
-    // Our state
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop_arg(main_loop, renderer, 0, true);
 
-    // Main loop
+}
+
+static void main_loop (void* arg)
+{
+	SDL_Renderer* renderer = (SDL_Renderer*)arg;
+#endif
+	
+    // Our state
+    static bool show_demo_window = true;
+    static bool show_another_window = false;
+    static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
     bool done = false;
+
+#ifndef __EMSCRIPTEN__
+    // Main loop
     while (!done)
     {
+#endif
+		
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -108,8 +127,10 @@ int main (int argc, char** argv)
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
                 done = true;
+			#ifndef __EMSCRIPTEN__
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
                 done = true;
+			#endif
         }
 
         // Start the Dear ImGui frame
@@ -160,6 +181,8 @@ int main (int argc, char** argv)
         SDL_RenderClear(renderer);
         ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
         SDL_RenderPresent(renderer);
+
+#ifndef __EMSCRIPTEN__
     }
 
     // Cleanup
@@ -172,6 +195,7 @@ int main (int argc, char** argv)
     SDL_Quit();
 
     return 0;
+#endif
 }
 
 

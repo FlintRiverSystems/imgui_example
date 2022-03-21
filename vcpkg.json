@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "builtin-baseline": "fad0644ade71fc4a77cc85f9c6c265aac721f7ca",
     "dependencies": [
-		"sdl2",
+		{
+			"name": "sdl2",
+			"platform": "native"
+		},
 		{
         	"name": "imgui",
 			"default-features": false,
