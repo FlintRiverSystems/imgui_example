@@ -8,7 +8,7 @@ mkdir build.wasm
 
 cd build.wasm
 
-export EMSDK=/data/emsdk
+export EMSDK=$FRSTPSRC/emsdk
 
 # we're using a modified port of imgui that has the sdl dependency removed.
 # Emscripten already provides SDL2, and the sdl2 port in vcpkg won't compile for wasm32-emscrpten
