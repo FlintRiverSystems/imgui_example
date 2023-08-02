@@ -16,7 +16,7 @@ DST=~/data/proj/
 
 # -n = dry run
 
-rsync -rtvh --stats --exclude={build,build_release,build.win} $SRC $DST
+rsync -rtvh --stats --exclude={build,build_release,build.win,'.*.swp'} $SRC $DST
 
 echo "FINISHED"
 

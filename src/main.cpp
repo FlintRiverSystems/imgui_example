@@ -1,13 +1,4 @@
 
-#include "pch.h"
-
-
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_sdlrenderer2.h"
-#include <stdio.h>
-#include <SDL.h>
-
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
@@ -21,11 +12,10 @@ using namespace std;
 
 int main (int argc, char** argv)
 {
-
 	auto driver_count = SDL_GetNumVideoDrivers();
 	if (driver_count > 0)
 	{
-		cout << "Drivers: " << endl;
+		cout << "Available Drivers: " << endl;
 		for (int i=0; i<driver_count; ++i)
 		{
 			cout << SDL_GetVideoDriver(i) << endl;
@@ -95,7 +85,6 @@ int main (int argc, char** argv)
 
 #ifdef __EMSCRIPTEN__
 	emscripten_set_main_loop_arg(main_loop, renderer, 0, true);
-
 }
 
 static void main_loop (void* arg)
@@ -115,7 +104,6 @@ static void main_loop (void* arg)
     while (!done)
     {
 #endif
-		
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.

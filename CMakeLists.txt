@@ -7,18 +7,15 @@ message("FRSTPSRC: ${FRSTPSRC}")
 set(VCPKG_DIR "${FRSTPSRC}/vcpkg")
 message("VCPKG_DIR: ${VCPKG_DIR}")
 
-set(VCPKG_FEATURE_FLAGS "versions")
+#set(VCPKG_FEATURE_FLAGS "versions") #enable package versioning in manifest
 set(CMAKE_TOOLCHAIN_FILE ${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake CACHE STRING "vcpkg toolchain file")
 
 project(imgui_example)
-add_executable(imgui_example)
-
-message("CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
-
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_REQUIRED True)
+
+add_executable(${PROJECT_NAME})
 
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
@@ -36,25 +33,28 @@ if (NOT WASM)
 	find_package(SDL2 CONFIG REQUIRED)
 	target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main)
 
-
 	find_package(X11 REQUIRED)
 	target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
 
 else()
-
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sUSE_SDL=2")
-
 endif()
 
 if (MSVC)
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+
+	source_group(" " REGULAR_EXPRESSION ".*")
+	source_group("pch" REGULAR_EXPRESSION "cmake_pch\..*")
+
+	target_compile_options(${PROJECT_NAME} PRIVATE /MP)
 endif()
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch.h)
 
 source_group(" " REGULAR_EXPRESSION ".*")
 
-target_sources(${PROJECT_NAME}
-	PRIVATE
-		main.cpp
-)
+file(GLOB_RECURSE SRC_HDR src/*.h)
+file(GLOB_RECURSE SRC_CPP src/*.cpp)
+
+target_sources(${PROJECT_NAME} PRIVATE ${SRC_HDR} ${SRC_CPP})
 
