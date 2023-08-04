@@ -13,7 +13,7 @@ set(CMAKE_TOOLCHAIN_FILE ${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake CACHE STR
 project(imgui_example)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME})
 
